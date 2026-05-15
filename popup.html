@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>BYN Converter</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      width: 280px;
+      padding: 12px;
+      margin: 0;
+      font-size: 14px;
+      color: #222;
+    }
+    h1 { font-size: 14px; margin: 0 0 12px; }
+    .label { display: block; margin-bottom: 6px; color: #555; font-size: 12px; }
+    .muted { color: #888; font-size: 11px; }
+    .section { margin-bottom: 12px; }
+    hr { border: 0; border-top: 1px solid #eee; margin: 12px 0; }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    /* Segmented control: переключение валюты одним кликом. */
+    .segmented {
+      display: flex;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented label {
+      flex: 1;
+      text-align: center;
+      padding: 7px 0;
+      font-size: 13px;
+      cursor: pointer;
+      background: #f7f7f7;
+      transition: background .12s, color .12s;
+      user-select: none;
+    }
+    .segmented label + label { border-left: 1px solid #d0d0d0; }
+    .segmented label:hover { background: #ececec; }
+    .segmented label:has(input:checked) {
+      background: #1e88e5;
+      color: white;
+      font-weight: 600;
+    }
+
+    .this-site .host {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: #333;
+      word-break: break-all;
+    }
+    .this-site .status {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .this-site .status.ok { color: #2a7; }
+
+    button {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 13px;
+      margin-top: 6px;
+      cursor: pointer;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+    button:hover:not(:disabled) { background: #f0f0f0; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.primary { background: #1e88e5; color: white; border-color: #1e88e5; }
+    button.primary:hover { background: #1976d2; }
+
+    ul.sites {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 96px;
+      overflow-y: auto;
+    }
+    ul.sites li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      font-size: 12px;
+    }
+    ul.sites .host {
+      flex: 1;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    ul.sites button.remove {
+      width: auto;
+      padding: 2px 6px;
+      margin: 0;
+      font-size: 11px;
+      line-height: 1;
+      color: #888;
+    }
+
+    .rates {
+      font-size: 12px;
+      color: #555;
+    }
+    .rates div { margin-bottom: 3px; }
+  </style>
+</head>
+<body>
+  <h1>BYN Converter</h1>
+
+  <label class="toggle">
+    <input type="checkbox" id="enabled" checked>
+    Включено
+  </label>
+
+  <div class="section">
+    <div class="label">Показывать в:</div>
+    <div class="segmented" role="radiogroup" aria-label="Целевая валюта">
+      <label><input type="radio" name="currency" value="USD">USD&nbsp;$</label>
+      <label><input type="radio" name="currency" value="EUR">EUR&nbsp;€</label>
+      <label><input type="radio" name="currency" value="RUB">RUB&nbsp;₽</label>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="section this-site">
+    <div class="label">На этом сайте:</div>
+    <div class="host" id="thisSiteHost">…</div>
+    <div class="status" id="thisSiteStatus"></div>
+    <button id="thisSiteAction" hidden></button>
+  </div>
+
+  <div class="section" id="userSitesSection" hidden>
+    <div class="label">Мои сайты:</div>
+    <ul class="sites" id="userSitesList"></ul>
+  </div>
+
+  <hr>
+
+  <div class="rates" id="ratesInfo">Загрузка курсов…</div>
+
+  <button id="refresh">Обновить курс</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
